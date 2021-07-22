@@ -1,19 +1,21 @@
 import React from 'react';
-import * as fn from './utilities/functions';
+
 const WeatherDetail = (props) => {
     return (
-        <div className="cards">
-            <h1>{props.city}</h1>
-            <h5 className="py-4">
-                <i className={`fa fa-6x ${props.weatherIcon}`}></i>
-            </h5>
+        <div className=" col-12 weather-detail mt-3">
+            <div className="weather-detail__item">
+                {props.humidity && <h4 className="py-3">Humidity</h4>}
+                {props.humidity && <span>{props.humidity} %</span>}
 
-            {props.temperature ? (<h1 className="py-2">{props.temperature}&deg;</h1>) : null}
-
-            {/** show max and min temp */}
-            {fn.minmaxTemp(props.maxTemp, props.minTemp)}
-
-            <h4 className="py-3">{props.description}</h4>
+            </div>
+            <div className="weather-detail__item">
+                {props.windSpeed && <h4 className="py-3">Wind Speed</h4>}
+                {props.windSpeed && <span>{props.windSpeed} <small>mph</small></span>}
+            </div>
+            <div className="weather-detail__item">
+                {props.feelsLike && <h4 className="py-3">Feels Like</h4>}
+                {props.feelsLike && <span>{props.feelsLike}&deg;</span>}
+            </div>
         </div>
     );
 };

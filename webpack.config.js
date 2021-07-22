@@ -1,5 +1,5 @@
 const path = require('path');
-
+const Dotenv = require('dotenv-webpack');
 module.exports = {
     mode: 'development',
     entry: './src/App.js',
@@ -28,5 +28,11 @@ module.exports = {
     devtool: 'eval-cheap-module-source-map',
     devServer: {
         contentBase: path.join(__dirname, 'public')
-    }
+    },
+    plugins: [
+        new Dotenv({
+            path: './.env',
+            systemvars: true
+        })
+    ],
 };

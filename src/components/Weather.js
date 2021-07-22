@@ -1,8 +1,11 @@
 import React from 'react';
+import Header from './marginals/Header';
+import Footer from './marginals/Footer';
+import WeatherSummary from './WeatherSummary';
 import WeatherDetail from './WeatherDetail';
 import WeatherForm from './WeatherForm';
 import * as fn from './utilities/functions';
-const API_KEY = "95bf197a8cbfb46c8422aaa2a7ba9fa1";
+const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
 export default class Weather extends React.Component {
 
     constructor() {
@@ -17,6 +20,7 @@ export default class Weather extends React.Component {
             description: "",
             feelsLike: undefined,
             humidity: undefined,
+            windSpeed: undefined,
             error: false
         }
 
@@ -70,14 +74,16 @@ export default class Weather extends React.Component {
             const response = await api_call.json();
             this.setState((prevState) => ({
                 city: prevState.city = response.name,
-                temperature: prevState.temperature = fn.calCelsius(response.main.temp),
-                maxTemp: prevState.maxTemp = fn.calCelsius(response.main.temp_max),
-                minTemp: prevState.maxTemp = fn.calCelsius(response.main.temp_min),
+                temperature: prevState.temperature = fn.toCelsius(response.main.temp),
+                maxTemp: prevState.maxTemp = fn.toCelsius(response.main.temp_max),
+                minTemp: prevState.maxTemp = fn.toCelsius(response.main.temp_min),
+                windSpeed: prevState.windSpeed = fn.toMilesPerHour(response.wind.speed),
                 description: prevState.description = response.weather[0].description,
+                feelsLike: prevState.feelsLike = fn.toCelsius(response.main.feels_like),
+                humidity: prevState.humidity = response.main.humidity,
                 error: false
             }));
             this.handleGetWeatherIcon(this.weatherIcon, response.weather[0].id)
-            console.log(response);
         } else {
             this.setState({
                 error: true
@@ -88,21 +94,26 @@ export default class Weather extends React.Component {
 
     render() {
         return (
-            <div className="container">
-                <div className="row">
-                    <WeatherForm
-                        getWeather={this.handleGetWeather}
-                        error={this.state.error}
-                    />
-                    <WeatherDetail
-                        city={this.state.city}
-                        temperature={this.state.temperature}
-                        maxTemp={this.state.maxTemp}
-                        minTemp={this.state.minTemp}
-                        description={this.state.description}
-                        weatherIcon={this.state.icon}
-                    />
-                </div>
+            <div className="main-content">
+                <Header />
+                <WeatherForm
+                    getWeather={this.handleGetWeather}
+                    error={this.state.error}
+                />
+                <WeatherSummary
+                    city={this.state.city}
+                    temperature={this.state.temperature}
+                    maxTemp={this.state.maxTemp}
+                    minTemp={this.state.minTemp}
+                    description={this.state.description}
+                    weatherIcon={this.state.icon}
+                />
+                <WeatherDetail
+                    humidity={this.state.humidity}
+                    windSpeed={this.state.windSpeed}
+                    feelsLike={this.state.feelsLike}
+                />
+                <Footer />
 
             </div>
         );
