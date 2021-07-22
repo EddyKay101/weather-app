@@ -3,7 +3,7 @@ import React from 'react';
 const Footer = () => {
     return (
         <footer>
-            <p>Created by</p>
+            <p>{`Weather App ${new Date().getFullYear()}`}</p>
         </footer>
     )
 }

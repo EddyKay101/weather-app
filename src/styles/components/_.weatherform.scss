@@ -1,0 +1,23 @@
+form {
+    margin-top: 3rem;
+}
+form input[name="city"],
+form input[name="country"] {
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid whitesmoke;
+    border-radius: 0;
+    padding: 4rem 0 1rem 0;
+}
+
+.form-control:focus,
+.form-control:active {
+    background: transparent;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-color: #333;
+}
+
+.weather-form {
+    padding: 0;
+}

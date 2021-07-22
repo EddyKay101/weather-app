@@ -4,16 +4,17 @@ const WeatherForm = (props) => {
     return (
         <div className="container">
             <div>{props.error && fn.error()}</div>
-            <form onSubmit={props.getWeather}>
-                <div className="row">
-                    <div className="col-md-3">
-                        <input type="text" className="form-control" name="city" placeholder="City" />
-                    </div>
-                    <div className="col-md-3">
-                        <button className="btn btn-warning">Get Weather</button>
-                    </div>
+
+            <div className="row">
+                <div className="col-12 d-md-flex flex-column weather-form">
+                    <form onSubmit={props.getWeather}>
+                        <input type="text" className="form-control" name="city" placeholder="City" autoComplete="off" />
+                        <input type="text" className="form-control" name="country" placeholder="Country" autoComplete="off" />
+                        <button className="mt-5 col-sm-12">Get Weather</button>
+                    </form>
                 </div>
-            </form>
+            </div>
+
 
         </div>
     )

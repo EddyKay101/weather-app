@@ -12,6 +12,7 @@ export default class Weather extends React.Component {
         super();
         this.state = {
             city: undefined,
+            country: undefined,
             icon: undefined,
             main: undefined,
             temperature: undefined,
@@ -21,6 +22,7 @@ export default class Weather extends React.Component {
             feelsLike: undefined,
             humidity: undefined,
             windSpeed: undefined,
+            rainVolume: undefined,
             error: false
         }
 
@@ -66,14 +68,16 @@ export default class Weather extends React.Component {
     handleGetWeather = async (e) => {
         e.preventDefault();
 
-        const city = e.target.elements.city.value;
+        let city = e.target.elements.city.value;
+        let country = e.target.elements.country.value;
 
-        if (city) {
-            const api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`);
+        if (city && country) {
+            const api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${API_KEY}`);
 
             const response = await api_call.json();
             this.setState((prevState) => ({
                 city: prevState.city = response.name,
+                country: prevState.country = response.sys.country,
                 temperature: prevState.temperature = fn.toCelsius(response.main.temp),
                 maxTemp: prevState.maxTemp = fn.toCelsius(response.main.temp_max),
                 minTemp: prevState.maxTemp = fn.toCelsius(response.main.temp_min),
@@ -81,6 +85,7 @@ export default class Weather extends React.Component {
                 description: prevState.description = response.weather[0].description,
                 feelsLike: prevState.feelsLike = fn.toCelsius(response.main.feels_like),
                 humidity: prevState.humidity = response.main.humidity,
+                rainVolume: response.rain ? prevState.rainVolume = response.rain['1h'] : undefined,
                 error: false
             }));
             this.handleGetWeatherIcon(this.weatherIcon, response.weather[0].id)
@@ -94,26 +99,29 @@ export default class Weather extends React.Component {
 
     render() {
         return (
-            <div className="main-content">
+            <div>
                 <Header />
-                <WeatherForm
-                    getWeather={this.handleGetWeather}
-                    error={this.state.error}
-                />
-                <WeatherSummary
-                    city={this.state.city}
-                    temperature={this.state.temperature}
-                    maxTemp={this.state.maxTemp}
-                    minTemp={this.state.minTemp}
-                    description={this.state.description}
-                    weatherIcon={this.state.icon}
-                />
-                <WeatherDetail
-                    humidity={this.state.humidity}
-                    windSpeed={this.state.windSpeed}
-                    feelsLike={this.state.feelsLike}
-                />
-                <Footer />
+                <div className="main-content">
+                    <WeatherForm
+                        getWeather={this.handleGetWeather}
+                        error={this.state.error}
+                    />
+                    <WeatherSummary
+                        city={this.state.city}
+                        country={this.state.country}
+                        temperature={this.state.temperature}
+                        maxTemp={this.state.maxTemp}
+                        minTemp={this.state.minTemp}
+                        description={this.state.description}
+                        weatherIcon={this.state.icon}
+                    />
+                    <WeatherDetail
+                        humidity={this.state.humidity}
+                        windSpeed={this.state.windSpeed}
+                        feelsLike={this.state.feelsLike}
+                        rainVolume={this.state.rainVolume}
+                    />
+                </div>
 
             </div>
         );

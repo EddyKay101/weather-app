@@ -4,7 +4,7 @@ const WeatherSummary = (props) => {
     return (
         <div className="weather-summary mt-5">
             <div className="weather-summary__location">
-                <h1>{props.city}</h1>
+                {props.city && props.country && <h1>{props.city},{props.country}</h1>}
                 <h4 className="py-3">{props.description}</h4>
                 <h5 className="py-4">
                     <i className={`fa fa-6x ${props.weatherIcon}`}></i>
