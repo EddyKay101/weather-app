@@ -11,7 +11,8 @@ module.exports = {
         rules: [{
             loader: 'babel-loader',
             test: /\.js$/,
-            exclude: /node_modules/
+            exclude: /node_modules/,
+
         }, {
             test: /\.s?css$/,
             use: [
@@ -19,6 +20,9 @@ module.exports = {
                 'css-loader',
                 'sass-loader'
             ]
+        }, {
+            test: /\.(svg|woff|woff2|ttf|eot|otf)([\?]?.*)$/,
+            loader: 'file-loader?name=assets/fonts/[name].[ext]',
         }]
     },
     devtool: 'eval-cheap-module-source-map',
