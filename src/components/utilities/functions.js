@@ -11,19 +11,11 @@ export function minmaxTemp(max, min) {
 
 }
 
-export function toCelsius(temp) {
+export function farenheittoCelsius(temp) {
     return Math.floor(temp - 273.15);
 
 }
 
-export function toMilesPerHour(speed) {
+export function speedToMilesPerHour(speed) {
     return Math.floor(speed * 2.237);
-}
-
-export function error() {
-    return (
-        <div className="alert alert-danger mx-5" role="alert">
-            Please do not leave the field(s) empty
-        </div>
-    );
 }

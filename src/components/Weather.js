@@ -1,6 +1,5 @@
 import React from 'react';
 import Header from './marginals/Header';
-import Footer from './marginals/Footer';
 import WeatherSummary from './WeatherSummary';
 import WeatherDetail from './WeatherDetail';
 import WeatherForm from './WeatherForm';
@@ -23,7 +22,7 @@ export default class Weather extends React.Component {
             humidity: undefined,
             windSpeed: undefined,
             rainVolume: undefined,
-            error: false
+            error: null
         }
 
         this.weatherIcon = {
@@ -61,7 +60,7 @@ export default class Weather extends React.Component {
                 this.setState({ icon: this.weatherIcon.Clouds });
                 break;
             default:
-                this.setState({ icon: this.weatherIcon.Clouds });
+                this.setState({ icon: this.weatherIcon.Atmosphere });
         }
     }
 
@@ -70,34 +69,45 @@ export default class Weather extends React.Component {
 
         let city = e.target.elements.city.value;
         let country = e.target.elements.country.value;
-
         if (city && country) {
-            const api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${API_KEY}`);
+            const weather = fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${API_KEY}`);
 
-            const response = await api_call.json();
-            this.setState((prevState) => ({
-                city: prevState.city = response.name,
-                country: prevState.country = response.sys.country,
-                temperature: prevState.temperature = fn.toCelsius(response.main.temp),
-                maxTemp: prevState.maxTemp = fn.toCelsius(response.main.temp_max),
-                minTemp: prevState.maxTemp = fn.toCelsius(response.main.temp_min),
-                windSpeed: prevState.windSpeed = fn.toMilesPerHour(response.wind.speed),
-                description: prevState.description = response.weather[0].description,
-                feelsLike: prevState.feelsLike = fn.toCelsius(response.main.feels_like),
-                humidity: prevState.humidity = response.main.humidity,
-                rainVolume: response.rain ? prevState.rainVolume = response.rain['1h'] : undefined,
-                error: false
-            }));
-            this.handleGetWeatherIcon(this.weatherIcon, response.weather[0].id)
+            await weather.then(res => {
+                if (!res.ok) {
+                    throw Error('Could not retrieve information at this time')
+                }
+                return res.json();
+            }).then(data => {
+                this.setState((prevState) => ({
+                    city: prevState.city = data.name,
+                    country: prevState.country = data.sys.country,
+                    temperature: prevState.temperature = fn.farenheittoCelsius(data.main.temp),
+                    maxTemp: prevState.maxTemp = fn.farenheittoCelsius(data.main.temp_max),
+                    minTemp: prevState.maxTemp = fn.farenheittoCelsius(data.main.temp_min),
+                    windSpeed: prevState.windSpeed = fn.speedToMilesPerHour(data.wind.speed),
+                    description: prevState.description = data.weather[0].description,
+                    feelsLike: prevState.feelsLike = fn.farenheittoCelsius(data.main.feels_like),
+                    humidity: prevState.humidity = data.main.humidity,
+                    rainVolume: data.rain ? prevState.rainVolume = data.rain['1h'] : undefined,
+                    error: null
+                }));
+                this.handleGetWeatherIcon(this.weatherIcon, data.weather[0].id);
+            }).catch(err => {
+                this.setState(() => ({
+                    error: err.message
+                }));
+            });
         } else {
-            this.setState({
-                error: true
-            })
+            this.setState(() => ({
+                error: 'Please do not leave the field(s) empty'
+            }));
         }
+
     };
 
 
     render() {
+
         return (
             <div>
                 <Header />
