@@ -6,7 +6,7 @@ A weather app built with React which consumes the Open Weather Map API.
 
 -   Node.js should be installed
 -   Internet Connection 😅, the application handles those sort of scenarios any way :)
--   .envfile at the root of the application which contains the API KEY.
+-   .env file at the root of the application which contains the API KEY.
 
 ### Instructions
 
